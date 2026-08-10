@@ -1,407 +1,8 @@
-<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111111">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Mes Victoires</title>
-
-<style>
-*{box-sizing:border-box}
-
-body{
-font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;
-margin:0;
-background:#f4f4f6;
-color:#111;
-}
-
-.wrap{
-max-width:560px;
-margin:auto;
-padding:22px 16px 45px;
-}
-
-h1{
-font-size:30px;
-margin:8px 0 3px;
-}
-
-.sub{
-color:#666;
-margin:0;
-}
-
-.top{
-display:flex;
-gap:8px;
-margin:14px 0;
-}
-
-.top button,.save{
-flex:1;
-border:0;
-border-radius:13px;
-padding:11px;
-font-weight:750;
-}
-
-.black{
-background:#111;
-color:#fff;
-}
-
-.white{
-background:#fff;
-}
-
-.day{
-display:flex;
-align-items:center;
-justify-content:space-between;
-background:#fff;
-border-radius:18px;
-padding:10px 12px;
-}
-
-.day button{
-border:0;
-background:#eee;
-border-radius:12px;
-width:42px;
-height:38px;
-font-size:20px;
-}
-
-.daylabel{
-text-align:center;
-font-weight:800;
-}
-
-.daylabel small{
-display:block;
-color:#777;
-font-size:12px;
-font-weight:500;
-}
-
-.hero{
-background:#111;
-color:#fff;
-border-radius:22px;
-padding:21px;
-margin:14px 0;
-}
-
-.k{
-font-size:12px;
-color:#bbb;
-}
-
-.pct{
-font-size:46px;
-font-weight:850;
-}
-
-.summary{
-color:#bbb;
-font-size:14px;
-}
-
-.score{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:9px 0;
-border-top:1px solid #2d2d2d;
-font-weight:800;
-}
-
-.score button{
-border:0;
-background:#2c2c2c;
-color:#fff;
-border-radius:9px;
-width:34px;
-height:30px;
-font-size:20px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
-}
-
-.card{
-background:#fff;
-border-radius:20px;
-padding:17px;
-min-height:137px;
-box-shadow:0 3px 12px #0000000f;
-}
-
-.emoji{
-font-size:32px;
-}
-
-.label{
-font-weight:750;
-margin-top:12px;
-min-height:38px;
-}
-
-.buttons{
-display:flex;
-gap:7px;
-margin-top:10px;
-}
-
-.win,.miss{
-border:0;
-border-radius:10px;
-padding:9px 8px;
-font-weight:750;
-flex:1;
-}
-
-.win{
-background:#111;
-color:#fff;
-}
-
-.miss{
-background:#eee;
-}
-
-.panel{
-background:#fff;
-border-radius:20px;
-padding:15px;
-margin-top:18px;
-}
-
-.historyItem{
-padding:12px 0;
-border-bottom:1px solid #eee;
-cursor:pointer;
-}
-
-.historyItem:last-child{
-border:0;
-}
-
-.historyTop{
-display:flex;
-justify-content:space-between;
-gap:10px;
-align-items:flex-start;
-}
-
-.historyMain{
-font-weight:700;
-}
-
-.historyTime{
-font-size:12px;
-color:#777;
-white-space:nowrap;
-}
-
-.historyDetails{
-font-size:12px;
-color:#666;
-margin-top:6px;
-line-height:1.4;
-}
-
-.editHint{
-font-size:11px;
-color:#999;
-margin-top:5px;
-}
-
-.small{
-font-size:12px;
-color:#777;
-}
-
-.modal{
-position:fixed;
-inset:0;
-background:#0007;
-display:none;
-align-items:flex-end;
-justify-content:center;
-z-index:20;
-}
-
-.modal.open{
-display:flex;
-}
-
-.sheet{
-background:#fff;
-width:100%;
-max-width:560px;
-border-radius:24px 24px 0 0;
-padding:20px 16px 28px;
-max-height:90vh;
-overflow:auto;
-}
-
-.sheet h3{
-margin:0 0 5px;
-}
-
-.sheet p{
-color:#666;
-}
-
-.sec{
-font-size:12px;
-font-weight:800;
-color:#777;
-margin:18px 0 8px;
-text-transform:uppercase;
-}
-
-.levels{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:7px;
-}
-
-.level,.chip{
-border:1px solid #ddd;
-background:#fff;
-border-radius:14px;
-padding:10px;
-font-weight:700;
-}
-
-.level{
-text-align:center;
-}
-
-.level.sel,.chip.sel{
-background:#111;
-color:#fff;
-border-color:#111;
-}
-
-.face{
-display:block;
-font-size:24px;
-}
-
-.chips{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-}
-
-.chip{
-border-radius:999px;
-}
-
-.explain{
-display:none;
-margin-top:10px;
-background:#f1f1f4;
-border-radius:14px;
-padding:12px;
-font-size:13px;
-}
-
-.sheet textarea{
-width:100%;
-min-height:82px;
-border:1px solid #ddd;
-border-radius:14px;
-padding:12px;
-font:inherit;
-}
-
-.cancel{
-width:100%;
-border:0;
-background:#eee;
-border-radius:13px;
-padding:12px;
-margin-top:8px;
-font-weight:700;
-}
-
-.goalrow{
-display:flex;
-align-items:center;
-gap:8px;
-padding:10px 0;
-border-bottom:1px solid #eee;
-}
-
-.goalrow span:nth-child(2){
-flex:1;
-font-weight:700;
-}
-
-.goalrow button{
-border:0;
-border-radius:9px;
-padding:8px;
-}
-
-.form{
-display:flex;
-gap:8px;
-margin-top:12px;
-}
-
-.form input{
-min-width:0;
-border:1px solid #ddd;
-border-radius:12px;
-padding:12px;
-}
-
-.form #newEmoji{
-width:65px;
-}
-
-.form #newName{
-flex:1;
-}
-
-.add{
-width:100%;
-border:0;
-background:#111;
-color:#fff;
-border-radius:13px;
-padding:12px;
-margin-top:8px;
-font-weight:800;
-}
-
-.danger{
-width:100%;
-border:0;
-background:#fff0f0;
-color:#a00;
-border-radius:13px;
-padding:12px;
-margin-top:8px;
-font-weight:800;
-}
-</style>
-</head>
-
-<body>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Mes Victoires</title><style>
+*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;margin:0;background:#f4f4f6;color:#111}.wrap{max-width:560px;margin:auto;padding:22px 16px 45px}h1{font-size:30px;margin:8px 0 3px}.sub{color:#666;margin:0}.top{display:flex;gap:8px;margin:14px 0}.top button,.save{flex:1;border:0;border-radius:13px;padding:11px;font-weight:750}.black{background:#111;color:#fff}.white{background:#fff}.day{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:18px;padding:10px 12px}.day button{border:0;background:#eee;border-radius:12px;width:42px;height:38px;font-size:20px}.daylabel{text-align:center;font-weight:800}.daylabel small{display:block;color:#777;font-size:12px;font-weight:500}.hero{background:#111;color:#fff;border-radius:22px;padding:21px;margin:14px 0}.k{font-size:12px;color:#bbb}.pct{font-size:46px;font-weight:850}.summary{color:#bbb;font-size:14px}.score{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid #2d2d2d;font-weight:800}.score button{border:0;background:#2c2c2c;color:#fff;border-radius:9px;width:34px;height:30px;font-size:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border-radius:20px;padding:17px;min-height:137px;box-shadow:0 3px 12px #0000000f}.emoji{font-size:32px}.label{font-weight:750;margin-top:12px;min-height:38px}.buttons{display:flex;gap:7px;margin-top:10px}.win,.miss{border:0;border-radius:10px;padding:9px 8px;font-weight:750;flex:1}.win{background:#111;color:#fff}.miss{background:#eee}.panel{background:#fff;border-radius:20px;padding:15px;margin-top:18px}.item{padding:11px 0;border-bottom:1px solid #eee}.itop{display:flex;justify-content:space-between;gap:8px}.det{font-size:12px;color:#666;margin-top:5px;line-height:1.4}.hint{font-size:11px;color:#999;margin-top:4px}.small{font-size:12px;color:#777}.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;z-index:20}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:20px 16px 28px;max-height:90vh;overflow:auto}.sheet h3{margin:0 0 5px}.sheet p{color:#666}.sec{font-size:12px;font-weight:800;color:#777;margin:18px 0 8px;text-transform:uppercase}.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.level,.chip{border:1px solid #ddd;background:#fff;border-radius:14px;padding:10px;font-weight:700}.level{text-align:center}.level.sel,.chip.sel{background:#111;color:#fff;border-color:#111}.face{display:block;font-size:24px}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{border-radius:999px}.explain{display:none;margin-top:10px;background:#f1f1f4;border-radius:14px;padding:12px;font-size:13px}.sheet textarea{width:100%;min-height:82px;border:1px solid #ddd;border-radius:14px;padding:12px;font:inherit}.cancel,.danger{width:100%;border:0;border-radius:13px;padding:12px;margin-top:8px;font-weight:700}.cancel{background:#eee}.danger{background:#fff0f0;color:#a00}.goalrow{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eee}.goalrow span:nth-child(2){flex:1;font-weight:700}.goalrow button{border:0;border-radius:9px;padding:8px}.form{display:flex;gap:8px;margin-top:12px}.form input{min-width:0;border:1px solid #ddd;border-radius:12px;padding:12px}.form #newEmoji{width:65px}.form #newName{flex:1}.add{width:100%;border:0;background:#111;color:#fff;border-radius:13px;padding:12px;margin-top:8px;font-weight:800}
+</style></head><body>
 
 <div class="wrap">
-
 <h1>🏆 Mes Victoires</h1>
 <p class="sub">Observer. Attendre. Choisir.</p>
 
@@ -417,21 +18,10 @@ font-weight:800;
 </div>
 
 <div class="hero">
-
-<div class="k">
-MAÎTRISE DU JOUR
-</div>
-
-<div id="pct" class="pct">
-—
-</div>
-
-<div id="summary" class="summary">
-Aucune occasion enregistrée
-</div>
-
+<div class="k">MAÎTRISE DU JOUR</div>
+<div id="pct" class="pct">—</div>
+<div id="summary" class="summary">Aucune occasion enregistrée</div>
 <div id="scores"></div>
-
 </div>
 
 <div id="cards" class="grid"></div>
@@ -440,1088 +30,834 @@ Aucune occasion enregistrée
 <b>Détail du jour</b>
 <div id="history"></div>
 </div>
-
 </div>
-
 
 <div id="generic" class="modal">
-
 <div class="sheet">
-
 <h3 id="gtitle"></h3>
-
-<p>
-Un écart est une information, pas un jugement.
-</p>
-
+<p>Un écart est une information, pas un jugement.</p>
 <div id="reasons" class="chips"></div>
-
-<button class="cancel" data-close="generic">
-Annuler
-</button>
-
+<button class="cancel" data-close="generic">Annuler</button>
 </div>
 </div>
-
 
 <div id="emotion" class="modal">
-
 <div class="sheet">
 
-<h3 id="emotionTitle">
-😤 Événement émotionnel
-</h3>
+<h3 id="emotionTitle">😤 Événement émotionnel</h3>
+<p>Observe la réaction puis ce que la situation a touché en toi.</p>
 
-<p>
-Observe la réaction puis ce que la situation a touché en toi.
-</p>
-
-<div class="sec">
-1. Niveau de réaction
-</div>
-
+<div class="sec">1. Niveau de réaction</div>
 <div id="levels" class="levels"></div>
+<div class="small">0 contrôlé · 1 léger · 2 clair · 3 fort · 4 emportement</div>
 
-<div class="small">
-0 contrôlé · 1 léger · 2 clair · 3 fort · 4 emportement
-</div>
+<div class="sec">2. Que s'est-il passé ?</div>
+<textarea id="situation" placeholder="Décris la situation..."></textarea>
 
-<div class="sec">
-2. Que s'est-il passé ?
-</div>
-
-<textarea
-id="situation"
-placeholder="Décris la situation...">
-</textarea>
-
-<div class="sec">
-3. Qu'est-ce que cela a touché en moi ?
-</div>
-
+<div class="sec">3. Qu'est-ce que cela a touché en moi ?</div>
 <div id="triggers" class="chips"></div>
-
 <div id="explain" class="explain"></div>
 
-<div class="sec">
-4. Mon explication (optionnel)
-</div>
+<div class="sec">4. Mon explication (optionnel)</div>
+<textarea id="why" placeholder="Ce que tu comprends de ta réaction..."></textarea>
 
-<textarea
-id="why"
-placeholder="Ce que tu comprends de ta réaction...">
-</textarea>
-
-<button
-id="saveEmotion"
-class="save black"
-style="width:100%;margin-top:12px">
-Enregistrer
-</button>
-
-<button
-id="deleteEmotion"
-class="danger"
-style="display:none">
-Supprimer cet événement
-</button>
-
-<button
-class="cancel"
-data-close="emotion">
-Annuler
-</button>
+<button id="saveEmotion" class="save black" style="width:100%;margin-top:12px">Enregistrer</button>
+<button id="deleteEmotion" class="danger" style="display:none">Supprimer cet événement</button>
+<button class="cancel" data-close="emotion">Annuler</button>
 
 </div>
 </div>
-
 
 <div id="goalModal" class="modal">
-
 <div class="sheet">
-
-<h3>
-⚙️ Mes objectifs
-</h3>
-
-<p>
-Active, supprime ou crée tes objectifs.
-</p>
+<h3>⚙️ Mes objectifs</h3>
+<p>Active, supprime ou crée tes objectifs.</p>
 
 <div id="goalList"></div>
 
 <div class="form">
-
-<input
-id="newEmoji"
-value="🎯">
-
-<input
-id="newName"
-placeholder="Nouvel objectif">
-
+<input id="newEmoji" value="🎯">
+<input id="newName" placeholder="Nouvel objectif">
 </div>
 
-<button
-id="create"
-class="add">
-Créer cet objectif
-</button>
-
-<button
-class="cancel"
-data-close="goalModal">
-Terminé
-</button>
-
+<button id="create" class="add">Créer cet objectif</button>
+<button class="cancel" data-close="goalModal">Terminé</button>
 </div>
 </div>
-
 
 <script>
-
-(function(){
-
-'use strict';
-
+(function(){'use strict';
 
 const DG=[
-
-[
-'tea',
-'☕',
-'Thé',
-'Thé sans biscuit',
-[
-'Automatique',
-'Envie forte',
-'Faim',
-'Choix conscient'
-]
-],
-
-[
-'alcohol',
-'🍷',
-'Alcool',
-'Verre évité / différé',
-[
-'Automatique',
-'Envie forte',
-'Social',
-'Choix conscient'
-]
-],
-
-[
-'sugar',
-'🍰',
-'Sucre',
-'Sucre évité',
-[
-'Automatique',
-'Envie forte',
-'Faim',
-'Choix conscient'
-]
-],
-
-[
-'emotion',
-'😤',
-'Émotion',
-'Prise de recul',
-[]
-],
-
-[
-'sport',
-'💪',
-'Sport',
-'Sport fait',
-[
-'Fatigue',
-'Temps',
-'Motivation',
-'Choix conscient'
-]
-]
-
-].map(
-x=>({
-id:x[0],
-icon:x[1],
-name:x[2],
-label:x[3],
-active:true,
-reasons:x[4]
-})
-);
-
+['tea','☕','Thé','Thé sans biscuit',['Automatique','Envie forte','Faim','Choix conscient']],
+['alcohol','🍷','Alcool','Verre évité / différé',['Automatique','Envie forte','Social','Choix conscient']],
+['sugar','🍰','Sucre','Sucre évité',['Automatique','Envie forte','Faim','Choix conscient']],
+['emotion','😤','Émotion','Prise de recul',[]],
+['sport','💪','Sport','Sport fait',['Fatigue','Temps','Motivation','Choix conscient']]
+].map(x=>({id:x[0],icon:x[1],name:x[2],label:x[3],active:true,reasons:x[4]}));
 
 const TR=[
+['love','❤️ Amour / connexion','Besoin de proximité, affection ou lien.'],
+['belonging','🤝 Acceptation / appartenance','Besoin de se sentir accepté ou inclus.'],
+['recognition','👏 Reconnaissance','Besoin que tes efforts soient vus et appréciés.'],
+['respect','👑 Respect','Sentiment d’être diminué, ignoré ou traité sans le respect attendu.'],
+['heard','👂 Être entendu / compris','Besoin que l’autre écoute ou comprenne ce que tu dis.'],
+['control','🎛️ Contrôle / prévisibilité','Besoin que la situation se déroule comme prévu ou de garder la maîtrise.'],
+['autonomy','🕊️ Autonomie / liberté','Quelque chose semble imposé ou réduit ta liberté de choix.'],
+['competence','🏆 Compétence / réussite','Besoin de réussir, être efficace ou ne pas te sentir en échec.'],
+['selfworth','🪞 Valeur personnelle','Quelque chose touche le sentiment d’être assez bon ou à la hauteur.'],
+['fairness','⚖️ Justice / équité','Impression que la situation est injuste.'],
+['safety','🛡️ Sécurité','Menace réelle ou ressentie sur ta sécurité ou ton bien-être.'],
+['trust','🤲 Confiance / fiabilité','Besoin de pouvoir compter sur l’autre.'],
+['standards','📏 Standards / attentes','Les choses ou les gens devraient fonctionner autrement.'],
+['boundaries','🚧 Limites / espace personnel','On empiète sur ton temps, ton espace ou tes priorités.'],
+['certainty','🧭 Certitude / clarté','Inconfort face au flou ou à l’incertitude.'],
+['comfort','😓 Confort / effort supplémentaire','Gêne, interruption ou effort que tu ne voulais pas faire.'],
+['impatience','⏱️ Temps / impatience','Cela prend trop de temps ou gaspille ton temps.'],
+['physical','🪫 Fatigue / état physique','Fatigue, faim, stress, alcool ou surcharge réduisent ton contrôle.'],
+['unknown','❓ Je ne sais pas','Aucune cause claire pour le moment.']
+].map(x=>({id:x[0],label:x[1],text:x[2]}));
 
-[
-'love',
-'❤️ Amour / connexion',
-'Besoin de proximité, affection ou lien.'
-],
+const DK='victoires_v10_data';
+const GK='victoires_v10_goals';
+const E=id=>document.getElementById(id);
 
-[
-'belonging',
-'🤝 Acceptation / appartenance',
-'Besoin de se sentir accepté ou inclus.'
-],
-
-[
-'recognition',
-'👏 Reconnaissance',
-'Besoin que tes efforts soient vus et appréciés.'
-],
-
-[
-'respect',
-'👑 Respect',
-'Sentiment d’être diminué, ignoré ou traité sans le respect attendu.'
-],
-
-[
-'heard',
-'👂 Être entendu / compris',
-'Besoin que l’autre écoute ou comprenne ce que tu dis.'
-],
-
-[
-'control',
-'🎛️ Contrôle / prévisibilité',
-'Besoin que la situation se déroule comme prévu ou de garder la maîtrise.'
-],
-
-[
-'autonomy',
-'🕊️ Autonomie / liberté',
-'Quelque chose semble imposé ou réduit ta liberté de choix.'
-],
-
-[
-'competence',
-'🏆 Compétence / réussite',
-'Besoin de réussir, être efficace ou ne pas te sentir en échec.'
-],
-
-[
-'selfworth',
-'🪞 Valeur personnelle',
-'Quelque chose touche le sentiment d’être assez bon ou à la hauteur.'
-],
-
-[
-'fairness',
-'⚖️ Justice / équité',
-'Impression que la situation est injuste.'
-],
-
-[
-'safety',
-'🛡️ Sécurité',
-'Menace réelle ou ressentie sur ta sécurité ou ton bien-être.'
-],
-
-[
-'trust',
-'🤲 Confiance / fiabilité',
-'Besoin de pouvoir compter sur l’autre.'
-],
-
-[
-'standards',
-'📏 Standards / attentes',
-'Les choses ou les gens devraient fonctionner autrement.'
-],
-
-[
-'boundaries',
-'🚧 Limites / espace personnel',
-'On empiète sur ton temps, ton espace ou tes priorités.'
-],
-
-[
-'certainty',
-'🧭 Certitude / clarté',
-'Inconfort face au flou ou à l’incertitude.'
-],
-
-[
-'comfort',
-'😓 Confort / effort supplémentaire',
-'Gêne, interruption ou effort que tu ne voulais pas faire.'
-],
-
-[
-'impatience',
-'⏱️ Temps / impatience',
-'Cela prend trop de temps ou gaspille ton temps.'
-],
-
-[
-'physical',
-'🪫 Fatigue / état physique',
-'Fatigue, faim, stress, alcool ou surcharge réduisent ton contrôle.'
-],
-
-[
-'unknown',
-'❓ Je ne sais pas',
-'Aucune cause claire pour le moment.'
-]
-
-].map(
-x=>({
-id:x[0],
-label:x[1],
-text:x[2]
-})
-);
-
-
-const DK=
-'victoires_v10_data';
-
-const GK=
-'victoires_v10_goals';
-
-
-const E=
-id=>
-document.getElementById(id);
-
-
-let d=
-new Date();
-
-let lev=
-null;
-
-let sel=
-[];
-
-let pending=
-null;
-
-let editingIndex=
-null;
-
+let d=new Date();
+let lev=null;
+let sel=[];
+let edit=null;
 
 function key(x){
-
-return x.getFullYear()
-+'-'+
-String(
-x.getMonth()+1
-)
-.padStart(
-2,
-'0'
-)
-+'-'+
-String(
-x.getDate()
-)
-.padStart(
-2,
-'0'
-);
-
+return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')
 }
-
 
 function goals(){
-
 try{
-
-let r=
-localStorage.getItem(GK);
+let r=localStorage.getItem(GK);
 
 if(r===null){
-
-localStorage.setItem(
-GK,
-JSON.stringify(DG)
-);
-
+localStorage.setItem(GK,JSON.stringify(DG));
 return DG;
-
 }
 
-let g=
-JSON.parse(r);
+let g=JSON.parse(r);
+return Array.isArray(g)?g:DG;
 
-return Array.isArray(g)
-? g
-: DG;
-
-}
-
-catch(e){
-
+}catch(e){
 return DG;
-
 }
-
 }
-
 
 function sgoals(g){
-
-localStorage.setItem(
-GK,
-JSON.stringify(g)
-);
-
+localStorage.setItem(GK,JSON.stringify(g))
 }
-
 
 function data(){
-
 try{
-
-return JSON.parse(
-localStorage.getItem(DK)
-||
-'{}'
-);
-
-}
-
-catch(e){
-
+return JSON.parse(localStorage.getItem(DK)||'{}')
+}catch(e){
 return {};
-
 }
-
 }
-
 
 function sdata(x){
-
-localStorage.setItem(
-DK,
-JSON.stringify(x)
-);
-
+localStorage.setItem(DK,JSON.stringify(x))
 }
 
-
-function add(
-id,
-result,
-extra
-){
-
-let x=
-data();
-
-let k=
-key(d);
-
-if(!x[k]){
-
-x[k]=[];
-
+function pc(w,t){
+return t?Math.round(w/t*100):null
 }
+
+function close(id){
+E(id).classList.remove('open')
+}
+
+function add(id,result,extra){
+
+let x=data();
+let k=key(d);
+
+if(!x[k])x[k]=[];
 
 x[k].push(
-
-Object.assign(
-{
-
+Object.assign({
 goalId:id,
-
 result:result,
-
 reason:null,
-
-time:
-new Date()
-.toISOString()
-
-},
-extra||{}
-)
-
+time:new Date().toISOString()
+},extra||{})
 );
 
 sdata(x);
-
 render();
-
 }
-
 
 function minus(id){
 
-let x=
-data();
+let x=data();
+let a=x[key(d)]||[];
 
-let a=
-x[key(d)]
-||
-[];
-
-for(
-let i=a.length-1;
-i>=0;
-i--
-){
-
-if(
-a[i].goalId===
-id
-){
-
-a.splice(
-i,
-1
-);
-
+for(let i=a.length-1;i>=0;i--){
+if(a[i].goalId===id){
+a.splice(i,1);
 break;
-
+}
 }
 
-}
-
-x[key(d)]=
-a;
-
+x[key(d)]=a;
 sdata(x);
-
 render();
-
 }
-
-
-function pc(
-w,
-t
-){
-
-return t
-? Math.round(
-w/t*100
-)
-: null;
-
-}
-
-
-function close(id){
-
-E(id)
-.classList
-.remove(
-'open'
-);
-
-}
-
 
 function generic(g){
 
-pending=
-g;
+E('gtitle').textContent=
+g.icon+' Qu’est-ce qui s’est passé ?';
 
-E('gtitle')
-.textContent=
-g.icon+
-' Qu’est-ce qui s’est passé ?';
+E('reasons').innerHTML='';
 
-E('reasons')
-.innerHTML=
-'';
+(g.reasons||[]).forEach(r=>{
 
+let b=document.createElement('button');
 
-(g.reasons||[])
-.forEach(
-r=>{
+b.className='chip';
+b.textContent=r;
 
-let b=
-document.createElement(
-'button'
-);
-
-b.className=
-'chip';
-
-b.textContent=
-r;
-
-b.onclick=
-()=>{
-
-add(
-g.id,
-'miss',
-{
-reason:r
-}
-);
-
-close(
-'generic'
-);
-
+b.onclick=()=>{
+add(g.id,'miss',{reason:r});
+close('generic');
 };
 
-E('reasons')
-.appendChild(b);
+E('reasons').appendChild(b);
 
+});
+
+E('generic').classList.add('open');
 }
-);
-
-
-E('generic')
-.classList
-.add(
-'open'
-);
-
-}
-
 
 function levels(){
 
-E('levels')
-.innerHTML=
-'';
+E('levels').innerHTML='';
 
+['🙂','😐','😕','😠','🤬'].forEach((f,i)=>{
 
-[
-'🙂',
-'😐',
-'😕',
-'😠',
-'🤬'
-]
-.forEach(
-(f,i)=>{
+let b=document.createElement('button');
 
-let b=
-document.createElement(
-'button'
-);
-
-b.className=
-'level'
-+
-(
-lev===i
-?
-' sel'
-:
-''
-);
+b.className='level'+(lev===i?' sel':'');
 
 b.innerHTML=
-'<span class="face">'+
-f+
-'</span>'+
-i;
+'<span class="face">'+f+'</span>'+i;
 
-b.onclick=
-()=>{
-
-lev=
-i;
-
+b.onclick=()=>{
+lev=i;
 levels();
-
 };
 
-E('levels')
-.appendChild(b);
+E('levels').appendChild(b);
 
+});
 }
-);
-
-}
-
 
 function triggerUI(){
 
-E('triggers')
-.innerHTML=
-'';
+E('triggers').innerHTML='';
 
+TR.forEach(t=>{
 
-TR.forEach(
-t=>{
-
-let b=
-document.createElement(
-'button'
-);
+let b=document.createElement('button');
 
 b.className=
-'chip'
-+
-(
-sel.includes(
-t.id
-)
-?
-' sel'
-:
-''
-);
+'chip'+(sel.includes(t.id)?' sel':'');
 
-b.textContent=
-t.label;
+b.textContent=t.label;
 
+b.onclick=()=>{
 
-b.onclick=
-()=>{
-
-if(
-sel.includes(
-t.id
-)
-){
-
-sel=
-sel.filter(
-x=>
-x!==t.id
-);
-
-}
-
-else{
-
-if(
-sel.length>=2
-){
-
-sel.shift();
-
-}
-
-sel.push(
-t.id
-);
-
+if(sel.includes(t.id)){
+sel=sel.filter(x=>x!==t.id);
+}else{
+if(sel.length>=2)sel.shift();
+sel.push(t.id);
 }
 
 triggerUI();
-
-explain();
 
 };
 
+E('triggers').appendChild(b);
 
-E('triggers')
-.appendChild(b);
+});
 
-}
-);
+let a=TR.filter(t=>sel.includes(t.id));
+let z=E('explain');
 
+z.style.display=a.length?'block':'none';
 
-explain();
-
-}
-
-
-function explain(){
-
-let a=
-TR.filter(
-t=>
-sel.includes(
-t.id
-)
-);
-
-let b=
-E('explain');
-
-
-if(!a.length){
-
-b.style.display=
-'none';
-
-b.innerHTML=
-'';
-
-return;
-
+z.innerHTML=
+a.map(t=>'<b>'+t.label+'</b><br>'+t.text)
+.join('<br><br>');
 }
 
+function openEmotion(i){
 
-b.style.display=
-'block';
+edit=i;
+lev=null;
+sel=[];
 
+E('situation').value='';
+E('why').value='';
 
-b.innerHTML=
-a.map(
-t=>
-'<b>'+
-t.label+
-'</b><br>'+
-t.text
-)
-.join(
-'<br><br>'
-);
+E('emotionTitle').textContent=
+i==null
+?'😤 Événement émotionnel'
+:'✏️ Modifier l’événement';
 
-}
+E('deleteEmotion').style.display=
+i==null?'none':'block';
 
+if(i!=null){
 
-function openEmotion(
-index=null
-){
+let e=(data()[key(d)]||[])[i];
 
-editingIndex=
-index;
+if(e){
 
 lev=
-null;
+typeof e.intensity==='number'
+?e.intensity
+:null;
 
 sel=
-[];
+Array.isArray(e.triggers)
+?e.triggers.slice()
+:[];
 
-E('situation')
-.value=
-'';
+E('situation').value=
+e.description||'';
 
-E('why')
-.value=
-'';
-
-
-E('emotionTitle')
-.textContent=
-
-index===null
-
-?
-'😤 Événement émotionnel'
-
-:
-'✏️ Modifier l’événement émotionnel';
-
-
-E('deleteEmotion')
-.style.display=
-
-index===null
-
-?
-'none'
-
-:
-'block';
-
-
-if(
-index!==null
-){
-
-let ev=
-(
-data()[key(d)]
-||
-[]
-)[index];
-
-
-if(ev){
-
-lev=
-
-typeof ev.intensity===
-'number'
-
-?
-ev.intensity
-
-:
-null;
-
-
-sel=
-
-Array.isArray(
-ev.triggers
-)
-
-?
-ev.triggers.slice()
-
-:
-[];
-
-
-E('situation')
-.value=
-ev.description
-||
-'';
-
-
-E('why')
-.value=
-ev.explanation
-||
-'';
+E('why').value=
+e.explanation||'';
 
 }
-
 }
-
 
 levels();
-
 triggerUI();
 
-E('emotion')
-.classList
-.add(
-'open'
-);
-
+E('emotion').classList.add('open');
 }
-
 
 function saveEmotion(){
 
-if(
-lev===null
-){
-
-alert(
-'Choisis le niveau de réaction.'
-);
-
+if(lev===null){
+alert('Choisis le niveau de réaction.');
 return;
-
 }
 
-
-let s=
-E('situation')
-.value
-.trim();
-
+let s=E('situation').value.trim();
 
 if(!s){
-
-alert(
-'Décris ce qui s’est passé.'
-);
-
+alert('Décris ce qui s’est passé.');
 return;
-
 }
 
-
-if(
-editingIndex===null
-){
+if(edit==null){
 
 add(
 'emotion',
-
-lev===0
-?
-'win'
-:
-'miss',
-
+lev===0?'win':'miss',
 {
-
-intensity:
-lev,
-
-description:
-s,
-
-triggers:
-sel.slice(),
-
-explanation:
-E('why')
-.value
-.trim()
-||
-null
-
+intensity:lev,
+description:s,
+triggers:sel.slice(),
+explanation:E('why').value.trim()||null
 }
-
 );
 
-}
+}else{
 
-else{
+let x=data();
+let k=key(d);
+let a=x[k]||[];
+let e=a[edit];
 
-let x=
-data();
+if(e){
 
-let k=
-key(d);
+e.result=lev===0?'win':'miss';
+e.intensity=lev;
+e.description=s;
+e.triggers=sel.slice();
+e.explanation=
+E('why').value.trim()||null;
 
-let a=
-x[k]
-||
-[];
-
-let ev=
-a[editingIndex];
-
-
-if(ev){
-
-ev.result=
-
-lev===0
-?
-'win'
-:
-'miss';
-
-
-ev.intensity=
-lev;
-
-ev.description=
-s;
-
-ev.triggers=
-sel.slice();
-
-ev.explanation=
-
-E('why')
-.value
-.trim()
-||
-null;
-
-
-x[k]=
-a;
+x[k]=a;
 
 sdata(x);
-
 render();
 
 }
+}
+
+close('emotion');
+edit=null;
+}
+
+function delEmotion(){
+
+if(edit==null)return;
+
+let x=data();
+let k=key(d);
+let a=x[k]||[];
+
+a.splice(edit,1);
+
+x[k]=a;
+
+sdata(x);
+
+close('emotion');
+
+edit=null;
+
+render();
+}
+
+function goalSettings(){
+
+let gs=goals();
+
+E('goalList').innerHTML='';
+
+gs.forEach(g=>{
+
+let r=document.createElement('div');
+r.className='goalrow';
+
+let i=document.createElement('span');
+i.textContent=g.icon;
+
+let n=document.createElement('span');
+n.textContent=g.label;
+
+let t=document.createElement('button');
+
+t.textContent=
+g.active?'Actif':'Masqué';
+
+t.onclick=()=>{
+
+let a=goals();
+
+let q=a.find(x=>x.id===g.id);
+
+if(q)q.active=!q.active;
+
+sgoals(a);
+
+goalSettings();
+render();
+};
+
+let z=document.createElement('button');
+
+z.textContent='Suppr.';
+
+z.onclick=()=>{
+
+sgoals(
+goals().filter(x=>x.id!==g.id)
+);
+
+goalSettings();
+render();
+
+};
+
+r.append(i,n,t,z);
+
+E('goalList').appendChild(r);
+
+});
+}
+
+function render(){
+
+let gs=goals();
+let ev=data()[key(d)]||[];
+let today=key(new Date());
+
+E('date').innerHTML=
+d.toLocaleDateString(
+'fr-FR',
+{
+weekday:'long',
+day:'numeric',
+month:'long',
+year:'numeric'
+}
+)
++
+'<small>'+
+(
+key(d)===today
+?'Aujourd’hui'
+:'Journée enregistrée'
+)
++'</small>';
+
+let ids=gs.map(g=>g.id);
+
+let vis=
+ev.filter(e=>ids.includes(e.goalId));
+
+let w=
+vis.filter(e=>e.result==='win').length;
+
+let p=pc(w,vis.length);
+
+E('pct').textContent=
+p===null?'—':p+'%';
+
+E('summary').textContent=
+vis.length
+?w+' choix maîtrisés sur '+vis.length+' occasions'
+:'Aucune occasion enregistrée';
+
+E('scores').innerHTML='';
+
+gs.forEach(g=>{
+
+let a=
+ev.filter(e=>e.goalId===g.id);
+
+if(!a.length)return;
+
+let x=
+a.filter(e=>e.result==='win').length;
+
+let s=
+g.icon+' '+
+g.name+' '+
+x+'/'+
+a.length+
+' — '+
+pc(x,a.length)+
+'%';
+
+if(g.id==='emotion'){
+
+let v=
+a.map(e=>
+typeof e.intensity==='number'
+?e.intensity
+:null
+)
+.filter(x=>x!==null);
+
+if(v.length){
+
+s+=
+' — '+
+(
+v.reduce((a,b)=>a+b,0)
+/v.length
+).toFixed(1)
++
+' 😖';
+
+}
+}
+
+let r=document.createElement('div');
+r.className='score';
+
+let b=document.createElement('span');
+b.textContent=s;
+
+let m=document.createElement('button');
+m.textContent='−';
+
+m.onclick=()=>minus(g.id);
+
+r.append(b,m);
+
+E('scores').appendChild(r);
+
+});
+
+E('cards').innerHTML='';
+
+gs.filter(g=>g.active)
+.forEach(g=>{
+
+let c=document.createElement('div');
+c.className='card';
+
+let i=document.createElement('div');
+i.className='emoji';
+i.textContent=g.icon;
+
+let l=document.createElement('div');
+l.className='label';
+l.textContent=g.label;
+
+let bs=document.createElement('div');
+bs.className='buttons';
+
+if(g.id==='emotion'){
+
+let b=document.createElement('button');
+
+b.className='win';
+
+b.textContent='Ajouter événement';
+
+b.onclick=()=>openEmotion(null);
+
+bs.appendChild(b);
+
+}else{
+
+let a=document.createElement('button');
+
+a.className='win';
+a.textContent='✓ Maîtrisé';
+
+a.onclick=()=>add(g.id,'win');
+
+let b=document.createElement('button');
+
+b.className='miss';
+b.textContent='○ Écart';
+
+b.onclick=()=>generic(g);
+
+bs.append(a,b);
 
 }
 
+c.append(i,l,bs);
 
-close(
-'emotion'
+E('cards').appendChild(c);
+
+});
+
+E('history').innerHTML='';
+
+if(!ev.length){
+
+E('history').textContent=
+'Aucune occasion enregistrée.';
+
+}else{
+
+ev.slice()
+.reverse()
+.forEach((e,ri)=>{
+
+let oi=
+ev.length-1-ri;
+
+let g=
+gs.find(x=>x.id===e.goalId);
+
+if(!g)return;
+
+let it=
+document.createElement('div');
+
+it.className='item';
+
+let tp=
+document.createElement('div');
+
+tp.className='itop';
+
+let a=
+document.createElement('b');
+
+a.textContent=
+g.icon+' '+
+(
+e.result==='win'
+?'✓ Maîtrisé'
+:'○ Écart'
+)
++
+(
+typeof e.intensity==='number'
+?' · niveau '+e.intensity
+:''
+)
++
+(
+e.reason
+?' · '+e.reason
+:''
 );
 
-editingIndex=
-null;
+let tm=
+document.createElement('span');
+
+tm.className='small';
+
+tm.textContent=
+new Date(e.time)
+.toLocaleTimeString(
+'fr-FR',
+{
+hour:'2-digit',
+minute:'2-digit'
+}
+);
+
+tp.append(a,tm);
+
+it.appendChild(tp);
+
+if(
+g.id==='emotion'
+&&
+(
+e.description||
+e.triggers||
+e.explanation
+)
+){
+
+let p=[];
+
+if(e.description){
+p.push(
+'Situation : '+e.description
+);
+}
+
+if(
+Array.isArray(e.triggers)
+&&
+e.triggers.length
+){
+
+let n=
+e.triggers
+.map(id=>TR.find(t=>t.id===id))
+.filter(Boolean)
+.map(t=>t.label);
+
+if(n.length){
+p.push(
+'Déclencheur : '+n.join(' + ')
+);
+}
+}
+
+if(e.explanation){
+p.push(
+'Explication : '+e.explanation
+);
+}
+
+let q=
+document.createElement('div');
+
+q.className='det';
+
+q.innerHTML=
+p.map(x=>'<div>'+x+'</div>')
+.join('');
+
+let h=
+document.createElement('div');
+
+h.className='hint';
+
+h.textContent=
+'Touchez pour modifier';
+
+it.append(q,h);
+
+it.onclick=
+()=>openEmotion(oi);
+
+}
+
+E('history').appendChild(it);
+
+});
+}
+}
+
+E('today').onclick=()=>{
+d=new Date();
+render();
+};
+
+E('prev').onclick=()=>{
+d.setDate(d.getDate()-1);
+render();
+};
+
+E('next').onclick=()=>{
+d.setDate(d.getDate()+1);
+render();
+};
+
+E('goals').onclick=()=>{
+goalSettings();
+E('goalModal').classList.add('open');
+};
+
+E('create').onclick=()=>{
+
+let n=
+E('newName').value.trim();
+
+if(!n)return;
+
+let g=goals();
+
+g.push({
+id:'custom_'+Date.now(),
+icon:E('newEmoji').value.trim()||'🎯',
+name:n,
+label:n,
+active:true,
+reasons:[
+'Automatique',
+'Envie forte',
+'Contexte',
+'Choix conscient'
+]
+});
+
+sgoals(g);
+
+E('newName').value='';
+
+goalSettings();
+render();
+close('goalModal');
+};
+
+E('saveEmotion').onclick=
+saveEmotion;
+
+E('deleteEmotion').onclick=
+delEmotion;
+
+document
+.querySelectorAll('[data-close]')
+.forEach(
+b=>
+b.onclick=
+()=>close(b.dataset.close)
+);
+
+render();
+
+})();
+</script>
+
+</body>
+</html>
