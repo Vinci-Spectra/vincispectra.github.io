@@ -1,1332 +1,489 @@
-<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111111">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Mes Victoires</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Mes Victoires</title><style>
+*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;margin:0;background:#f4f4f6;color:#111}.wrap{max-width:560px;margin:auto;padding:22px 16px 45px}h1{font-size:30px;margin:8px 0 3px}.sub{color:#666;margin:0}.top{display:flex;gap:8px;margin:14px 0}.top button,.save{flex:1;border:0;border-radius:13px;padding:11px;font-weight:750}.black{background:#111;color:#fff}.white{background:#fff}.day{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:18px;padding:10px 12px}.day button{border:0;background:#eee;border-radius:12px;width:42px;height:38px;font-size:20px}.daylabel{text-align:center;font-weight:800}.daylabel small{display:block;color:#777;font-size:12px;font-weight:500}.hero{background:#111;color:#fff;border-radius:22px;padding:21px;margin:14px 0}.k{font-size:12px;color:#bbb}.pct{font-size:46px;font-weight:850}.summary{color:#bbb;font-size:14px}.score{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid #2d2d2d;font-weight:800}.score button{border:0;background:#2c2c2c;color:#fff;border-radius:9px;width:34px;height:30px;font-size:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border-radius:20px;padding:17px;min-height:137px;box-shadow:0 3px 12px #0000000f}.emoji{font-size:32px}.label{font-weight:750;margin-top:12px;min-height:38px}.buttons{display:flex;gap:7px;margin-top:10px}.win,.miss{border:0;border-radius:10px;padding:9px 8px;font-weight:750;flex:1}.win{background:#111;color:#fff}.miss{background:#eee}.panel{background:#fff;border-radius:20px;padding:15px;margin-top:18px}.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #eee}.small{font-size:12px;color:#777}.modal{position:fixed;inset:0;background:#0007;display:none;align-items:flex-end;justify-content:center;z-index:20}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:20px 16px 28px;max-height:90vh;overflow:auto}.sheet h3{margin:0 0 5px}.sheet p{color:#666}.sec{font-size:12px;font-weight:800;color:#777;margin:18px 0 8px;text-transform:uppercase}.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.level,.chip{border:1px solid #ddd;background:#fff;border-radius:14px;padding:10px;font-weight:700}.level{text-align:center}.level.sel,.chip.sel{background:#111;color:#fff;border-color:#111}.face{display:block;font-size:24px}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{border-radius:999px}.explain{display:none;margin-top:10px;background:#f1f1f4;border-radius:14px;padding:12px;font-size:13px}.sheet textarea{width:100%;min-height:82px;border:1px solid #ddd;border-radius:14px;padding:12px;font:inherit}.cancel{width:100%;border:0;background:#eee;border-radius:13px;padding:12px;margin-top:8px;font-weight:700}.goalrow{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eee}.goalrow span:nth-child(2){flex:1;font-weight:700}.goalrow button{border:0;border-radius:9px;padding:8px}.form{display:flex;gap:8px;margin-top:12px}.form input{min-width:0;border:1px solid #ddd;border-radius:12px;padding:12px}.form #newEmoji{width:65px}.form #newName{flex:1}.add{width:100%;border:0;background:#111;color:#fff;border-radius:13px;padding:12px;margin-top:8px;font-weight:800}
+</style></head><body><div class="wrap"><h1>🏆 Mes Victoires</h1><p class="sub">Observer. Attendre. Choisir.</p><div class="top"><button id="today" class="black">Aujourd'hui</button><button id="goals" class="white">⚙️ Mes objectifs</button></div><div class="day"><button id="prev">‹</button><div id="date" class="daylabel"></div><button id="next">›</button></div><div class="hero"><div class="k">MAÎTRISE DU JOUR</div><div id="pct" class="pct">—</div><div id="summary" class="summary">Aucune occasion enregistrée</div><div id="scores"></div></div><div id="cards" class="grid"></div><div class="panel"><b>Détail du jour</b><div id="history" class="small"></div></div></div>
 
-<style>
-*{box-sizing:border-box}
+<div id="generic" class="modal"><div class="sheet"><h3 id="gtitle"></h3><p>Un écart est une information, pas un jugement.</p><div id="reasons" class="chips"></div><button class="cancel" data-close="generic">Annuler</button></div></div>
 
-body{
-font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
-margin:0;background:#f4f4f6;color:#111;
-}
+<div id="emotion" class="modal"><div class="sheet"><h3>😤 Événement émotionnel</h3><p>Observe la réaction puis ce que la situation a touché en toi.</p><div class="sec">1. Niveau de réaction</div><div id="levels" class="levels"></div><div class="small">0 contrôlé · 1 léger · 2 clair · 3 fort · 4 emportement</div><div class="sec">2. Que s'est-il passé ?</div><textarea id="situation" placeholder="Décris la situation..."></textarea><div class="sec">3. Qu'est-ce que cela a touché en moi ?</div><div id="triggers" class="chips"></div><div id="explain" class="explain"></div><div class="sec">4. Mon explication (optionnel)</div><textarea id="why" placeholder="Ce que tu comprends de ta réaction..."></textarea><button id="saveEmotion" class="save black" style="width:100%;margin-top:12px">Enregistrer</button><button class="cancel" data-close="emotion">Annuler</button></div></div>
 
-.wrap{max-width:560px;margin:auto;padding:22px 16px 45px}
-h1{font-size:30px;margin:8px 0 3px}
-.sub{color:#666;margin:0}
-
-.topbar{display:flex;gap:8px;margin-top:14px}
-.topbar button{
-flex:1;border:0;border-radius:13px;padding:11px;font-weight:750
-}
-.primary{background:#111;color:#fff}
-.secondary{background:#fff;color:#111}
-
-.daynav{
-display:flex;align-items:center;justify-content:space-between;
-background:#fff;border-radius:18px;padding:10px 12px;margin-top:12px
-}
-.daynav button{
-border:0;background:#eee;border-radius:12px;
-width:42px;height:38px;font-size:20px
-}
-.daylabel{text-align:center;font-weight:800}
-.daylabel small{
-display:block;color:#777;font-size:12px;
-font-weight:500;margin-top:2px
-}
-
-.hero{
-background:#111;color:#fff;border-radius:22px;
-padding:21px;margin:14px 0
-}
-.kicker{font-size:12px;color:#bbb}
-.pct{font-size:46px;font-weight:850;margin:4px 0}
-.summary{color:#bbb;font-size:14px}
-
-.scoreline{
-display:flex;justify-content:space-between;
-align-items:center;padding:9px 0;
-border-top:1px solid #2d2d2d
-}
-.scoreline b{font-size:17px}
-.minus{
-border:0;background:#2c2c2c;color:#fff;
-border-radius:9px;width:34px;height:30px;font-size:20px
-}
-
-.grid{
-display:grid;grid-template-columns:1fr 1fr;gap:12px
-}
-
-.card{
-background:#fff;border-radius:20px;padding:17px;
-min-height:137px;
-box-shadow:0 3px 12px rgba(0,0,0,.06)
-}
-.emoji{font-size:32px}
-.label{font-weight:750;margin-top:12px;min-height:38px}
-
-.buttons{display:flex;gap:7px;margin-top:10px}
-.win,.miss{
-border:0;border-radius:10px;padding:9px 8px;
-font-weight:750;flex:1
-}
-.win{background:#111;color:#fff}
-.miss{background:#eee;color:#333}
-
-.panel{
-background:#fff;border-radius:20px;
-padding:15px;margin-top:18px
-}
-
-.row{
-display:flex;justify-content:space-between;
-gap:10px;padding:9px 0;
-border-bottom:1px solid #eee
-}
-.row:last-child{border:0}
-.small{font-size:12px;color:#777}
-
-.modal{
-position:fixed;inset:0;
-background:rgba(0,0,0,.45);
-display:none;
-align-items:flex-end;
-justify-content:center;
-z-index:20
-}
-.modal.open{display:flex}
-
-.sheet{
-background:#fff;width:100%;max-width:560px;
-border-radius:24px 24px 0 0;
-padding:20px 16px 28px;
-max-height:88vh;overflow:auto
-}
-.sheet h3{margin:0 0 5px}
-.sheet p{margin:0 0 14px;color:#666}
-
-.reasons{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:9px
-}
-.reason{
-border:0;background:#eee;
-border-radius:13px;padding:13px;font-weight:700
-}
-
-.cancel{
-width:100%;border:0;background:#111;color:#fff;
-border-radius:13px;padding:12px;
-margin-top:10px;font-weight:700
-}
-
-.goalrow{
-display:flex;align-items:center;gap:8px;
-padding:11px 0;border-bottom:1px solid #eee
-}
-.goalname{flex:1;font-weight:700}
-
-.toggle,.delete{
-border:0;border-radius:10px;
-padding:8px 9px;font-weight:700
-}
-.toggle.on{background:#111;color:#fff}
-.toggle.off,.delete{background:#eee;color:#555}
-
-.form{
-display:grid;
-grid-template-columns:72px 1fr;
-gap:9px;margin-top:14px
-}
-.form input{
-border:1px solid #ddd;border-radius:12px;
-padding:12px;font:inherit
-}
-.add{
-grid-column:1/-1;border:0;
-background:#111;color:#fff;
-border-radius:13px;padding:12px;font-weight:800
-}
-.empty{
-grid-column:1/-1;background:#fff;
-border-radius:18px;padding:18px;color:#666
-}
-
-/* EMOTION */
-
-.sectionTitle{
-font-size:12px;font-weight:800;color:#777;
-margin:18px 0 8px;
-text-transform:uppercase
-}
-
-.levels{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:7px
-}
-
-.level{
-border:1px solid #ddd;
-background:#fff;
-border-radius:14px;
-padding:10px 4px;
-font-weight:800
-}
-
-.level.selected{
-background:#111;
-color:#fff;
-border-color:#111
-}
-
-.level .face{
-display:block;
-font-size:24px;
-margin-bottom:4px
-}
-
-.levelHint{
-font-size:12px;
-color:#777;
-margin-top:7px
-}
-
-textarea{
-width:100%;
-min-height:88px;
-border:1px solid #ddd;
-border-radius:14px;
-padding:12px;
-font:inherit;
-resize:vertical
-}
-
-.chips{
-display:flex;
-flex-wrap:wrap;
-gap:8px
-}
-
-.chip{
-border:1px solid #ddd;
-background:#fff;
-border-radius:999px;
-padding:10px 12px;
-font-weight:700
-}
-
-.chip.selected{
-background:#111;
-color:#fff;
-border-color:#111
-}
-
-.triggerExplain{
-display:none;
-margin-top:10px;
-background:#f1f1f4;
-border-radius:14px;
-padding:12px;
-font-size:13px;
-color:#444
-}
-
-.emotionSave{
-width:100%;
-border:0;
-background:#111;
-color:#fff;
-border-radius:13px;
-padding:12px;
-margin-top:14px;
-font-weight:800
-}
-
-.emotionCancel{
-width:100%;
-border:0;
-background:#eee;
-color:#111;
-border-radius:13px;
-padding:12px;
-margin-top:8px;
-font-weight:700
-}
-</style>
-</head>
-
-<body>
-
-<div class="wrap">
-
-<h1>🏆 Mes Victoires</h1>
-<p class="sub">Observer. Attendre. Choisir.</p>
-
-<div class="topbar">
-<button id="todayBtn" class="primary">Aujourd'hui</button>
-<button id="goalsBtn" class="secondary">⚙️ Mes objectifs</button>
-</div>
-
-<div class="daynav">
-<button id="prevDay">‹</button>
-<div id="dayLabel" class="daylabel"></div>
-<button id="nextDay">›</button>
-</div>
-
-<div class="hero">
-<div class="kicker">MAÎTRISE DU JOUR</div>
-<div class="pct" id="globalPct">—</div>
-<div class="summary" id="summary">
-Aucune occasion enregistrée
-</div>
-<div id="scores"></div>
-</div>
-
-<div class="grid" id="cards"></div>
-
-<div class="panel">
-<b>Détail du jour</b>
-<div id="history" class="small" style="margin-top:8px"></div>
-</div>
-
-</div>
-
-
-<!-- ECART NORMAL -->
-
-<div class="modal" id="missModal">
-<div class="sheet">
-
-<h3 id="missTitle">
-Qu'est-ce qui s'est passé ?
-</h3>
-
-<p>
-Un écart est une information, pas un jugement.
-</p>
-
-<div class="reasons" id="reasons"></div>
-
-<button class="cancel" id="cancelMiss">
-Annuler
-</button>
-
-</div>
-</div>
-
-
-<!-- OBJECTIFS -->
-
-<div class="modal" id="goalsModal">
-<div class="sheet">
-
-<h3>⚙️ Mes objectifs</h3>
-
-<p>
-Active, supprime ou crée tes propres objectifs.
-</p>
-
-<div id="goalList"></div>
-
-<div class="form">
-
-<input id="newEmoji" maxlength="4" value="🎯">
-
-<input
-id="newName"
-placeholder="Ex. Pas de téléphone au lit">
-
-<button class="add" id="createGoalBtn">
-Créer cet objectif
-</button>
-
-</div>
-
-<button class="cancel" id="closeGoals">
-Terminé
-</button>
-
-</div>
-</div>
-
-
-<!-- NOUVEAU MODULE EMOTION -->
-
-<div class="modal" id="emotionModal">
-<div class="sheet">
-
-<h3>😤 Événement émotionnel</h3>
-
-<p>
-Observe la réaction, puis essaie de comprendre ce que
-la situation a touché en toi.
-</p>
-
-<div class="sectionTitle">
-1. Niveau de réaction
-</div>
-
-<div class="levels" id="emotionLevels"></div>
-
-<div class="levelHint">
-0 = contrôlé · 1 = léger · 2 = clair ·
-3 = fort · 4 = emportement
-</div>
-
-<div class="sectionTitle">
-2. Que s'est-il passé ?
-</div>
-
-<textarea
-id="emotionSituation"
-placeholder="Ex. Leo m'a passé le téléphone alors que je courais et je n'étais pas prêt...">
-</textarea>
-
-<div class="sectionTitle">
-3. Qu'est-ce que cela a touché en moi ?
-</div>
-
-<div class="chips" id="emotionTriggers"></div>
-
-<div
-class="triggerExplain"
-id="triggerExplain">
-</div>
-
-<div class="sectionTitle">
-4. Mon explication
-</div>
-
-<textarea
-id="emotionExplanation"
-placeholder="Optionnel — qu'est-ce que tu comprends de ta réaction ?">
-</textarea>
-
-<button class="emotionSave" id="saveEmotion">
-Enregistrer
-</button>
-
-<button class="emotionCancel" id="cancelEmotion">
-Annuler
-</button>
-
-</div>
-</div>
-
+<div id="goalModal" class="modal"><div class="sheet"><h3>⚙️ Mes objectifs</h3><p>Active, supprime ou crée tes objectifs.</p><div id="goalList"></div><div class="form"><input id="newEmoji" value="🎯"><input id="newName" placeholder="Nouvel objectif"></div><button id="create" class="add">Créer cet objectif</button><button class="cancel" data-close="goalModal">Terminé</button></div></div>
 
 <script>
+(function(){'use strict';
 
-(function(){
+const DG=[
+['tea','☕','Thé','Thé sans biscuit',['Automatique','Envie forte','Faim','Choix conscient']],
+['alcohol','🍷','Alcool','Verre évité / différé',['Automatique','Envie forte','Social','Choix conscient']],
+['sugar','🍰','Sucre','Sucre évité',['Automatique','Envie forte','Faim','Choix conscient']],
+['emotion','😤','Émotion','Prise de recul',[]],
+['sport','💪','Sport','Sport fait',['Fatigue','Temps','Motivation','Choix conscient']]
+].map(x=>({id:x[0],icon:x[1],name:x[2],label:x[3],active:true,reasons:x[4]}));
 
-"use strict";
+const TR=[
+['love','❤️ Amour / connexion','Besoin de proximité, affection ou lien.'],
+['belonging','🤝 Acceptation / appartenance','Besoin de se sentir accepté ou inclus.'],
+['recognition','👏 Reconnaissance','Besoin que tes efforts soient vus et appréciés.'],
+['respect','👑 Respect','Sentiment d’être diminué, ignoré ou traité sans le respect attendu.'],
+['heard','👂 Être entendu / compris','Besoin que l’autre écoute ou comprenne ce que tu dis.'],
+['control','🎛️ Contrôle / prévisibilité','Besoin que la situation se déroule comme prévu ou de garder la maîtrise.'],
+['autonomy','🕊️ Autonomie / liberté','Quelque chose semble imposé ou réduit ta liberté de choix.'],
+['competence','🏆 Compétence / réussite','Besoin de réussir, être efficace ou ne pas te sentir en échec.'],
+['selfworth','🪞 Valeur personnelle','Quelque chose touche le sentiment d’être assez bon ou à la hauteur.'],
+['fairness','⚖️ Justice / équité','Impression que la situation est injuste.'],
+['safety','🛡️ Sécurité','Menace réelle ou ressentie sur ta sécurité ou ton bien-être.'],
+['trust','🤲 Confiance / fiabilité','Besoin de pouvoir compter sur l’autre.'],
+['standards','📏 Standards / attentes','Les choses ou les gens devraient fonctionner autrement.'],
+['boundaries','🚧 Limites / espace personnel','On empiète sur ton temps, ton espace ou tes priorités.'],
+['certainty','🧭 Certitude / clarté','Inconfort face au flou ou à l’incertitude.'],
+['comfort','😓 Confort / effort supplémentaire','Gêne, interruption ou effort que tu ne voulais pas faire.'],
+['impatience','⏱️ Temps / impatience','Cela prend trop de temps ou gaspille ton temps.'],
+['physical','🪫 Fatigue / état physique','Fatigue, faim, stress, alcool ou surcharge réduisent ton contrôle.'],
+['unknown','❓ Je ne sais pas','Aucune cause claire pour le moment.']
+].map(x=>({id:x[0],label:x[1],text:x[2]}));
 
+const DK='victoires_v10_data';
+const GK='victoires_v10_goals';
 
-const DEFAULT_GOALS = [
+const E=id=>document.getElementById(id);
 
-{
-id:"tea",
-icon:"☕",
-name:"Thé",
-label:"Thé sans biscuit",
-active:true,
-reasons:[
-"Automatique",
-"Envie forte",
-"Faim",
-"Choix conscient"
-]
-},
+let d=new Date();
+let lev=null;
+let sel=[];
+let pending=null;
 
-{
-id:"alcohol",
-icon:"🍷",
-name:"Alcool",
-label:"Verre évité / différé",
-active:true,
-reasons:[
-"Automatique",
-"Envie forte",
-"Social",
-"Choix conscient"
-]
-},
-
-{
-id:"sugar",
-icon:"🍰",
-name:"Sucre",
-label:"Sucre évité",
-active:true,
-reasons:[
-"Automatique",
-"Envie forte",
-"Faim",
-"Choix conscient"
-]
-},
-
-{
-id:"emotion",
-icon:"😤",
-name:"Émotion",
-label:"Prise de recul",
-active:true,
-reasons:[]
-},
-
-{
-id:"sport",
-icon:"💪",
-name:"Sport",
-label:"Sport fait",
-active:true,
-reasons:[
-"Fatigue",
-"Temps",
-"Motivation",
-"Choix conscient"
-]
+function key(x){
+return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')
 }
 
-];
-
-
-const DATA_KEY =
-"victoires_v10_data";
-
-const GOAL_KEY =
-"victoires_v10_goals";
-
-
-const EMOTION_TRIGGERS = [
-
-{
-id:"love",
-label:"❤️ Amour / connexion",
-text:"Besoin de proximité, d'affection ou de lien avec l'autre."
-},
-
-{
-id:"belonging",
-label:"🤝 Acceptation / appartenance",
-text:"Besoin de se sentir accepté ou inclus."
-},
-
-{
-id:"recognition",
-label:"👏 Reconnaissance",
-text:"Besoin que tes efforts ou ta contribution soient vus et appréciés."
-},
-
-{
-id:"respect",
-label:"👑 Respect",
-text:"Sentiment d'être diminué, ignoré ou traité sans le respect attendu."
-},
-
-{
-id:"heard",
-label:"👂 Être entendu / compris",
-text:"Besoin que l'autre écoute ou comprenne ce que tu dis."
-},
-
-{
-id:"control",
-label:"🎛️ Contrôle / prévisibilité",
-text:"Besoin que la situation se déroule comme prévu ou de garder la maîtrise."
-},
-
-{
-id:"autonomy",
-label:"🕊️ Autonomie / liberté",
-text:"Réaction à quelque chose qui semble imposé ou qui réduit ta liberté."
-},
-
-{
-id:"competence",
-label:"🏆 Compétence / réussite",
-text:"Besoin de réussir, d'être efficace ou de ne pas se sentir en échec."
-},
-
-{
-id:"selfworth",
-label:"🪞 Valeur personnelle",
-text:"Quelque chose touche le sentiment d'être assez bon ou à la hauteur."
-},
-
-{
-id:"fairness",
-label:"⚖️ Justice / équité",
-text:"Impression qu'une situation est injuste."
-},
-
-{
-id:"safety",
-label:"🛡️ Sécurité",
-text:"Menace réelle ou ressentie sur ta sécurité ou ton bien-être."
-},
-
-{
-id:"trust",
-label:"🤲 Confiance / fiabilité",
-text:"Besoin de pouvoir compter sur l'autre."
-},
-
-{
-id:"standards",
-label:"📏 Standards / attentes",
-text:"Impression que les choses ou les gens devraient fonctionner autrement."
-},
-
-{
-id:"boundaries",
-label:"🚧 Limites / espace personnel",
-text:"Impression qu'on empiète sur ton temps, ton espace ou tes priorités."
-},
-
-{
-id:"certainty",
-label:"🧭 Certitude / clarté",
-text:"Inconfort face au flou ou à l'incertitude."
-},
-
-{
-id:"comfort",
-label:"😓 Confort / effort supplémentaire",
-text:"Frustration liée à une gêne, une interruption ou un effort non souhaité."
-},
-
-{
-id:"impatience",
-label:"⏱️ Temps / impatience",
-text:"Impression que cela prend trop de temps ou gaspille ton temps."
-},
-
-{
-id:"physical",
-label:"🪫 Fatigue / état physique",
-text:"Fatigue, faim, stress ou surcharge qui réduisent ton contrôle."
-},
-
-{
-id:"unknown",
-label:"❓ Je ne sais pas",
-text:"Aucune cause claire pour le moment."
-}
-
-];
-
-
-let selectedDate =
-new Date();
-
-let pendingMissGoalId =
-null;
-
-let emotionLevel =
-null;
-
-let selectedEmotionTriggers =
-[];
-
-
-function el(id){
-
-return document.getElementById(id);
-
-}
-
-
-function dateKey(d){
-
-return d.getFullYear()
-+"-"+
-String(d.getMonth()+1).padStart(2,"0")
-+"-"+
-String(d.getDate()).padStart(2,"0");
-
-}
-
-
-function loadGoals(){
-
+function goals(){
 try{
-
-const raw =
-localStorage.getItem(GOAL_KEY);
-
-if(raw === null){
-
-localStorage.setItem(
-GOAL_KEY,
-JSON.stringify(DEFAULT_GOALS)
-);
-
-return DEFAULT_GOALS.map(
-function(g){
-return Object.assign({},g);
+let r=localStorage.getItem(GK);
+if(r===null){
+localStorage.setItem(GK,JSON.stringify(DG));
+return DG
 }
-);
-
+let g=JSON.parse(r);
+return Array.isArray(g)?g:DG
+}catch(e){
+return DG
+}
 }
 
-const parsed =
-JSON.parse(raw);
-
-if(Array.isArray(parsed)){
-return parsed;
+function sgoals(g){
+localStorage.setItem(GK,JSON.stringify(g))
 }
 
-return DEFAULT_GOALS;
-
-}
-
-catch(e){
-
-return DEFAULT_GOALS;
-
-}
-
-}
-
-
-function saveGoals(goals){
-
-localStorage.setItem(
-GOAL_KEY,
-JSON.stringify(goals)
-);
-
-}
-
-
-function loadData(){
-
+function data(){
 try{
-
-return JSON.parse(
-localStorage.getItem(DATA_KEY) || "{}"
-);
-
+return JSON.parse(localStorage.getItem(DK)||'{}')
+}catch(e){
+return {}
+}
 }
 
-catch(e){
-
-return {};
-
+function sdata(x){
+localStorage.setItem(DK,JSON.stringify(x))
 }
 
-}
-
-
-function saveData(data){
-
-localStorage.setItem(
-DATA_KEY,
-JSON.stringify(data)
-);
-
-}
-
-
-function getGoal(id){
-
-return loadGoals().find(
-function(g){
-return g.id === id;
-}
-);
-
-}
-
-
-function addEvent(
-goalId,
-result,
-reason,
-extra
-){
-
-const data =
-loadData();
-
-const k =
-dateKey(selectedDate);
-
-if(!data[k]){
-data[k] = [];
-}
-
-
-const event = {
-
-goalId:goalId,
-
+function add(id,result,extra){
+let x=data();
+let k=key(d);
+if(!x[k])x[k]=[];
+x[k].push(Object.assign({
+goalId:id,
 result:result,
-
-reason:reason || null,
-
+reason:null,
 time:new Date().toISOString()
+},extra||{}));
+sdata(x);
+render()
+}
 
+function minus(id){
+let x=data();
+let a=x[key(d)]||[];
+for(let i=a.length-1;i>=0;i--){
+if(a[i].goalId===id){
+a.splice(i,1);
+break
+}
+}
+x[key(d)]=a;
+sdata(x);
+render()
+}
+
+function pc(w,t){
+return t?Math.round(w/t*100):null
+}
+
+function close(id){
+E(id).classList.remove('open')
+}
+
+function generic(g){
+pending=g;
+E('gtitle').textContent=g.icon+' Qu’est-ce qui s’est passé ?';
+E('reasons').innerHTML='';
+(g.reasons||[]).forEach(r=>{
+let b=document.createElement('button');
+b.className='chip';
+b.textContent=r;
+b.onclick=()=>{
+add(g.id,'miss',{reason:r});
+close('generic')
 };
-
-
-if(extra){
-
-Object.keys(extra)
-.forEach(
-function(key){
-
-event[key] =
-extra[key];
-
-}
-);
-
+E('reasons').appendChild(b)
+});
+E('generic').classList.add('open')
 }
 
-
-data[k].push(event);
-
-saveData(data);
-
-render();
-
+function levels(){
+E('levels').innerHTML='';
+['🙂','😐','😕','😠','🤬'].forEach((f,i)=>{
+let b=document.createElement('button');
+b.className='level'+(lev===i?' sel':'');
+b.innerHTML='<span class="face">'+f+'</span>'+i;
+b.onclick=()=>{
+lev=i;
+levels()
+};
+E('levels').appendChild(b)
+})
 }
 
-
-function removeLast(goalId){
-
-const data =
-loadData();
-
-const k =
-dateKey(selectedDate);
-
-const arr =
-data[k] || [];
-
-
-for(
-let i=arr.length-1;
-i>=0;
-i--
-){
-
-if(
-arr[i].goalId === goalId
-){
-
-arr.splice(i,1);
-
-break;
-
+function triggerUI(){
+E('triggers').innerHTML='';
+TR.forEach(t=>{
+let b=document.createElement('button');
+b.className='chip'+(sel.includes(t.id)?' sel':'');
+b.textContent=t.label;
+b.onclick=()=>{
+if(sel.includes(t.id)){
+sel=sel.filter(x=>x!==t.id)
+}else{
+if(sel.length>=2)sel.shift();
+sel.push(t.id)
+}
+triggerUI();
+explain()
+};
+E('triggers').appendChild(b)
+});
+explain()
 }
 
+function explain(){
+let a=TR.filter(t=>sel.includes(t.id));
+let b=E('explain');
+
+if(!a.length){
+b.style.display='none';
+b.innerHTML='';
+return
 }
 
-
-data[k] =
-arr;
-
-saveData(data);
-
-render();
-
+b.style.display='block';
+b.innerHTML=a.map(t=>'<b>'+t.label+'</b><br>'+t.text).join('<br><br>')
 }
-
-
-function percentage(
-wins,
-total
-){
-
-if(!total){
-return null;
-}
-
-return Math.round(
-wins / total * 100
-);
-
-}
-
-
-function closeModal(id){
-
-el(id)
-.classList.remove("open");
-
-}
-
-
-/* NORMAL MISS */
-
-
-function openMiss(goalId){
-
-const goal =
-getGoal(goalId);
-
-if(!goal){
-return;
-}
-
-pendingMissGoalId =
-goalId;
-
-el("missTitle")
-.textContent =
-goal.icon+
-" Qu'est-ce qui s'est passé ?";
-
-
-el("reasons")
-.innerHTML =
-"";
-
-
-const reasons =
-goal.reasons || [
-
-"Automatique",
-"Envie forte",
-"Contexte",
-"Choix conscient"
-
-];
-
-
-reasons.forEach(
-function(reason){
-
-const button =
-document.createElement("button");
-
-button.className =
-"reason";
-
-button.textContent =
-reason;
-
-
-button.addEventListener(
-"click",
-function(){
-
-addEvent(
-pendingMissGoalId,
-"miss",
-reason,
-null
-);
-
-closeModal(
-"missModal"
-);
-
-pendingMissGoalId =
-null;
-
-}
-);
-
-
-el("reasons")
-.appendChild(button);
-
-}
-);
-
-
-el("missModal")
-.classList.add("open");
-
-}
-
-
-/* EMOTION */
-
-
-function renderEmotionLevels(){
-
-const faces =
-["🙂","😐","😕","😠","🤬"];
-
-
-el("emotionLevels")
-.innerHTML =
-"";
-
-
-faces.forEach(
-function(face,index){
-
-const button =
-document.createElement("button");
-
-
-button.className =
-
-"level"+
-(
-emotionLevel === index
-? " selected"
-: ""
-);
-
-
-const faceSpan =
-document.createElement("span");
-
-faceSpan.className =
-"face";
-
-faceSpan.textContent =
-face;
-
-
-button.appendChild(
-faceSpan
-);
-
-button.appendChild(
-document.createTextNode(
-String(index)
-)
-);
-
-
-button.addEventListener(
-"click",
-function(){
-
-emotionLevel =
-index;
-
-renderEmotionLevels();
-
-}
-);
-
-
-el("emotionLevels")
-.appendChild(button);
-
-}
-);
-
-}
-
-
-function renderEmotionTriggers(){
-
-el("emotionTriggers")
-.innerHTML =
-"";
-
-
-EMOTION_TRIGGERS.forEach(
-function(trigger){
-
-const button =
-document.createElement("button");
-
-
-button.className =
-
-"chip"+
-(
-selectedEmotionTriggers
-.indexOf(trigger.id) !== -1
-
-? " selected"
-: ""
-);
-
-
-button.textContent =
-trigger.label;
-
-
-button.addEventListener(
-"click",
-function(){
-
-const index =
-selectedEmotionTriggers
-.indexOf(trigger.id);
-
-
-if(index !== -1){
-
-selectedEmotionTriggers
-.splice(index,1);
-
-}
-
-else{
-
-if(
-selectedEmotionTriggers.length >= 2
-){
-
-selectedEmotionTriggers
-.shift();
-
-}
-
-selectedEmotionTriggers
-.push(trigger.id);
-
-}
-
-
-renderEmotionTriggers();
-
-renderTriggerExplanation();
-
-}
-);
-
-
-el("emotionTriggers")
-.appendChild(button);
-
-}
-);
-
-}
-
-
-function renderTriggerExplanation(){
-
-const box =
-el("triggerExplain");
-
-
-const selected =
-EMOTION_TRIGGERS.filter(
-function(trigger){
-
-return selectedEmotionTriggers
-.indexOf(trigger.id) !== -1;
-
-}
-);
-
-
-if(!selected.length){
-
-box.style.display =
-"none";
-
-box.innerHTML =
-"";
-
-return;
-
-}
-
-
-box.innerHTML =
-"";
-
-
-selected.forEach(
-function(trigger,index){
-
-if(index > 0){
-
-box.appendChild(
-document.createElement("br")
-);
-
-box.appendChild(
-document.createElement("br")
-);
-
-}
-
-
-const bold =
-document.createElement("b");
-
-bold.textContent =
-trigger.label;
-
-
-box.appendChild(bold);
-
-box.appendChild(
-document.createElement("br")
-);
-
-box.appendChild(
-document.createTextNode(
-trigger.text
-)
-);
-
-}
-);
-
-
-box.style.display =
-"block";
-
-}
-
 
 function openEmotion(){
-
-emotionLevel =
-null;
-
-selectedEmotionTriggers =
-[];
-
-
-el("emotionSituation")
-.value =
-"";
-
-el("emotionExplanation")
-.value =
-"";
-
-
-renderEmotionLevels();
-
-renderEmotionTriggers();
-
-renderTriggerExplanation();
-
-
-el("emotionModal")
-.classList.add("open");
-
+lev=null;
+sel=[];
+E('situation').value='';
+E('why').value='';
+levels();
+triggerUI();
+E('emotion').classList.add('open')
 }
 
-
-function saveEmotionEvent(){
-
-if(
-emotionLevel === null
-){
-
-alert(
-"Choisis d'abord le niveau de réaction."
-);
-
-return;
-
+function saveEmotion(){
+if(lev===null){
+alert('Choisis le niveau de réaction.');
+return
 }
 
+let s=E('situation').value.trim();
 
-const situation =
-el("emotionSituation")
-.value
-.trim();
-
-
-if(!situation){
-
-alert(
-"Écris simplement ce qui s'est passé."
-);
-
-return;
-
+if(!s){
+alert('Décris ce qui s’est passé.');
+return
 }
 
-
-/*
-0 = réaction maîtrisée
-1 à 4 = réaction sortie
-*/
-
-const result =
-
-emotionLevel === 0
-
-? "win"
-
-: "miss";
-
-
-addEvent(
-
-"emotion",
-
-result,
-
-null,
-
+add(
+'emotion',
+lev===0?'win':'miss',
 {
-
-intensity:
-emotionLevel,
-
-description:
-situation,
-
-triggers:
-selectedEmotionTriggers.slice(),
-
-explanation:
-el("emotionExplanation")
-.value
-.trim() || null
-
+intensity:lev,
+description:s,
+triggers:sel.slice(),
+explanation:E('why').value.trim()||null
 }
-
 );
 
-
-closeModal(
-"emotionModal"
-);
-
+close('emotion')
 }
 
+function goalSettings(){
+let gs=goals();
+E('goalList').innerHTML='';
 
-/* OBJECTIFS */
+gs.forEach(g=>{
+let r=document.createElement('div');
+r.className='goalrow';
 
+let i=document.createElement('span');
+i.textContent=g.icon;
 
-function renderGoalSettings(){
+let n=document.createElement('span');
+n.textContent=g.label;
 
-const goals =
-loadGoals();
+let t=document.createElement('button');
+t.textContent=g.active?'Actif':'Masqué';
+t.onclick=()=>{
+let a=goals();
+let q=a.find(x=>x.id===g.id);
+if(q)q.active=!q.active;
+sgoals(a);
+goalSettings();
+render()
+};
 
+let z=document.createElement('button');
+z.textContent='Suppr.';
+z.onclick=()=>{
+sgoals(goals().filter(x=>x.id!==g.id));
+goalSettings();
+render()
+};
 
-el("goalList")
-.innerHTML =
-"";
+r.append(i,n,t,z);
+E('goalList').appendChild(r)
+})
+}
 
+function render(){
+let gs=goals();
+let ev=data()[key(d)]||[];
+let today=key(new Date());
 
-goals.forEach(
-function(goal){
+E('date').innerHTML=
+d.toLocaleDateString('fr-FR',{
+weekday:'long',
+day:'numeric',
+month:'long',
+year:'numeric'
+})+
+'<small>'+
+(key(d)===today?'Aujourd’hui':'Journée enregistrée')+
+'</small>';
 
-const row =
-document.createElement("div");
+let ids=gs.map(g=>g.id);
 
-row.className =
-"goalrow";
+let vis=ev.filter(e=>ids.includes(e.goalId));
 
+let w=vis.filter(e=>e.result==='win').length;
 
-const icon =
-document.createElement("span");
+let p=pc(w,vis.length);
 
-icon.style.fontSize =
-"24px";
+E('pct').textContent=p===null?'—':p+'%';
 
-icon.text
+E('summary').textContent=
+vis.length
+?w+' choix maîtrisés sur '+vis.length+' occasions'
+:'Aucune occasion enregistrée';
+
+E('scores').innerHTML='';
+
+gs.forEach(g=>{
+let a=ev.filter(e=>e.goalId===g.id);
+
+if(!a.length)return;
+
+let x=a.filter(e=>e.result==='win').length;
+
+let s=
+g.icon+' '+
+g.name+' '+
+x+'/'+a.length+
+' — '+
+pc(x,a.length)+'%';
+
+if(g.id==='emotion'){
+let v=a
+.map(e=>typeof e.intensity==='number'?e.intensity:null)
+.filter(x=>x!==null);
+
+if(v.length){
+s+=' — '+
+(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1)+
+' 😖'
+}
+}
+
+let r=document.createElement('div');
+r.className='score';
+
+let b=document.createElement('span');
+b.textContent=s;
+
+let m=document.createElement('button');
+m.textContent='−';
+m.onclick=()=>minus(g.id);
+
+r.append(b,m);
+E('scores').appendChild(r)
+});
+
+E('cards').innerHTML='';
+
+gs.filter(g=>g.active).forEach(g=>{
+let c=document.createElement('div');
+c.className='card';
+
+let i=document.createElement('div');
+i.className='emoji';
+i.textContent=g.icon;
+
+let l=document.createElement('div');
+l.className='label';
+l.textContent=g.label;
+
+let bs=document.createElement('div');
+bs.className='buttons';
+
+if(g.id==='emotion'){
+let b=document.createElement('button');
+b.className='win';
+b.textContent='Ajouter événement';
+b.onclick=openEmotion;
+bs.appendChild(b)
+}else{
+let a=document.createElement('button');
+a.className='win';
+a.textContent='✓ Maîtrisé';
+a.onclick=()=>add(g.id,'win');
+
+let b=document.createElement('button');
+b.className='miss';
+b.textContent='○ Écart';
+b.onclick=()=>generic(g);
+
+bs.append(a,b)
+}
+
+c.append(i,l,bs);
+E('cards').appendChild(c)
+});
+
+E('history').innerHTML='';
+
+if(!ev.length){
+E('history').textContent='Aucune occasion enregistrée.'
+}else{
+ev.slice().reverse().forEach(e=>{
+let g=gs.find(x=>x.id===e.goalId);
+
+if(!g)return;
+
+let r=document.createElement('div');
+r.className='row';
+
+let a=document.createElement('span');
+let b=document.createElement('span');
+
+let t=
+g.icon+' '+
+(e.result==='win'?'✓ Maîtrisé':'○ Écart');
+
+if(e.reason){
+t+=' · '+e.reason
+}
+
+if(typeof e.intensity==='number'){
+t+=' · niveau '+e.intensity
+}
+
+if(e.description){
+t+=' · '+e.description
+}
+
+a.textContent=t;
+
+b.textContent=
+new Date(e.time)
+.toLocaleTimeString(
+'fr-FR',
+{
+hour:'2-digit',
+minute:'2-digit'
+}
+);
+
+r.append(a,b);
+E('history').appendChild(r)
+})
+}
+}
+
+E('today').onclick=()=>{
+d=new Date();
+render()
+};
+
+E('prev').onclick=()=>{
+d.setDate(d.getDate()-1);
+render()
+};
+
+E('next').onclick=()=>{
+d.setDate(d.getDate()+1);
+render()
+};
+
+E('goals').onclick=()=>{
+goalSettings();
+E('goalModal').classList.add('open')
+};
+
+E('create').onclick=()=>{
+let n=E('newName').value.trim();
+
+if(!n)return;
+
+let g=goals();
+
+g.push({
+id:'custom_'+Date.now(),
+icon:E('newEmoji').value.trim()||'🎯',
+name:n,
+label:n,
+active:true,
+reasons:[
+'Automatique',
+'Envie forte',
+'Contexte',
+'Choix conscient'
+]
+});
+
+sgoals(g);
+
+E('newName').value='';
+
+goalSettings();
+render();
+close('goalModal')
+};
+
+E('saveEmotion').onclick=saveEmotion;
+
+document.querySelectorAll('[data-close]')
+.forEach(b=>{
+b.onclick=()=>close(b.dataset.close)
+});
+
+render();
+
+})();
+</script></body></html>
