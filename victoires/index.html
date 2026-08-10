@@ -1,0 +1,609 @@
+    <!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Mes Victoires</title>
+
+<style>
+body{
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;
+margin:0;background:#f4f4f6;color:#111
+}
+.wrap{max-width:560px;margin:auto;padding:22px 16px 45px}
+h1{font-size:30px;margin:8px 0 3px}
+.sub{color:#666;margin:0}
+
+.topbar{display:flex;gap:8px;margin-top:14px}
+.topbar button{
+flex:1;border:0;border-radius:13px;padding:11px;font-weight:750
+}
+.primary{background:#111;color:#fff}
+.secondary{background:#fff;color:#111}
+
+.daynav{
+display:flex;align-items:center;justify-content:space-between;
+background:white;border-radius:18px;padding:10px 12px;margin-top:12px
+}
+.daynav button{
+border:0;background:#eee;border-radius:12px;width:42px;height:38px;font-size:20px
+}
+.daylabel{text-align:center;font-weight:800}
+.daylabel small{
+display:block;color:#777;font-size:12px;font-weight:500
+}
+
+.hero{
+background:#111;color:white;border-radius:22px;padding:21px;margin:14px 0
+}
+.hero .kicker{font-size:12px;color:#bbb}
+.pct{font-size:46px;font-weight:850;margin:4px 0}
+.hero .summary{color:#bbb;font-size:14px}
+
+.scoreline{
+display:flex;justify-content:space-between;align-items:center;
+padding:9px 0;border-top:1px solid #2d2d2d
+}
+.scoreline b{font-size:17px}
+.minus{
+border:0;background:#2c2c2c;color:white;border-radius:9px;
+width:34px;height:30px;font-size:20px
+}
+
+.grid{
+display:grid;grid-template-columns:1fr 1fr;gap:12px
+}
+.card{
+background:white;border:0;border-radius:20px;padding:17px;
+text-align:left;min-height:135px;
+box-shadow:0 3px 12px rgba(0,0,0,.06)
+}
+.emoji{font-size:32px}
+.label{font-weight:750;margin-top:12px}
+
+.buttons{display:flex;gap:7px;margin-top:12px}
+.win,.miss{
+border:0;border-radius:10px;padding:8px 9px;font-weight:750
+}
+.win{background:#111;color:white}
+.miss{background:#eee;color:#333}
+
+.panel{
+background:white;border-radius:20px;padding:15px;margin-top:18px
+}
+.row{
+display:flex;justify-content:space-between;gap:10px;
+padding:9px 0;border-bottom:1px solid #eee
+}
+.row:last-child{border:0}
+.small{font-size:12px;color:#777}
+
+.modal{
+position:fixed;inset:0;background:rgba(0,0,0,.45);
+display:none;align-items:flex-end;justify-content:center;z-index:10
+}
+.sheet{
+background:white;width:100%;max-width:560px;
+border-radius:24px 24px 0 0;padding:20px 16px 28px;
+max-height:82vh;overflow:auto
+}
+.sheet h3{margin:0 0 5px}
+.sheet p{margin:0 0 14px;color:#666}
+
+.reasons{
+display:grid;grid-template-columns:1fr 1fr;gap:9px
+}
+.reason{
+border:0;background:#eee;border-radius:13px;padding:13px;font-weight:700
+}
+.cancel{
+width:100%;border:0;background:#111;color:white;
+border-radius:13px;padding:12px;margin-top:10px;font-weight:700
+}
+
+.goalrow{
+display:flex;align-items:center;gap:10px;
+padding:11px 0;border-bottom:1px solid #eee
+}
+.goalname{flex:1;font-weight:700}
+.toggle{
+border:0;border-radius:10px;padding:8px 10px;font-weight:700
+}
+.on{background:#111;color:white}
+.off{background:#eee;color:#555}
+.delete{
+border:0;background:#eee;border-radius:10px;padding:8px 10px
+}
+
+.form{
+display:grid;grid-template-columns:72px 1fr;gap:9px;margin-top:14px
+}
+.form input{
+border:1px solid #ddd;border-radius:12px;padding:12px;font:inherit
+}
+.add{
+grid-column:1/-1;border:0;background:#111;color:white;
+border-radius:13px;padding:12px;font-weight:800
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>🏆 Mes Victoires</h1>
+<p class="sub">Observer. Attendre. Choisir.</p>
+
+<div class="topbar">
+<button class="primary" onclick="goToday()">Aujourd'hui</button>
+<button class="secondary" onclick="openGoals()">⚙️ Mes objectifs</button>
+</div>
+
+<div class="daynav">
+<button onclick="moveDay(-1)">‹</button>
+<div id="dayLabel" class="daylabel"></div>
+<button onclick="moveDay(1)">›</button>
+</div>
+
+<div class="hero">
+<div class="kicker">MAÎTRISE DU JOUR</div>
+<div class="pct" id="globalPct">—</div>
+<div class="summary" id="summary">Aucune occasion enregistrée</div>
+<div id="scores"></div>
+</div>
+
+<div class="grid" id="cards"></div>
+
+<div class="panel">
+<b>Détail du jour</b>
+<div id="history" class="small" style="margin-top:8px"></div>
+</div>
+
+</div>
+
+<div class="modal" id="missModal">
+<div class="sheet">
+
+<h3 id="modalTitle">Qu'est-ce qui s'est passé ?</h3>
+<p>Un écart est une information, pas un jugement.</p>
+
+<div class="reasons" id="reasons"></div>
+
+<button class="cancel" onclick="closeModal('missModal')">
+Annuler
+</button>
+
+</div>
+</div>
+
+
+<div class="modal" id="goalsModal">
+<div class="sheet">
+
+<h3>⚙️ Mes objectifs</h3>
+<p>Active les objectifs utiles ou crée le tien.</p>
+
+<div id="goalList"></div>
+
+<div class="form">
+
+<input id="newEmoji" maxlength="3" value="🎯">
+
+<input id="newName"
+placeholder="Ex. Pas de téléphone au lit">
+
+<button class="add" onclick="createGoal()">
+Créer cet objectif
+</button>
+
+</div>
+
+<button class="cancel" onclick="closeModal('goalsModal')">
+Terminé
+</button>
+
+</div>
+</div>
+
+
+<script>
+
+const DEFAULT_GOALS=[
+
+{
+id:"tea",
+icon:"☕",
+name:"Thé",
+label:"Thé sans biscuit",
+active:true,
+reasons:["Automatique","Envie forte","Faim","Choix conscient"]
+},
+
+{
+id:"alcohol",
+icon:"🍷",
+name:"Alcool",
+label:"Verre évité / différé",
+active:true,
+reasons:["Automatique","Envie forte","Social","Choix conscient"]
+},
+
+{
+id:"sugar",
+icon:"🍰",
+name:"Sucre",
+label:"Sucre évité",
+active:true,
+reasons:["Automatique","Envie forte","Faim","Choix conscient"]
+},
+
+{
+id:"emotion",
+icon:"😤",
+name:"Émotion",
+label:"Prise de recul",
+active:true,
+reasons:["Trop rapide","Stress","Fatigue","Colère forte"]
+},
+
+{
+id:"sport",
+icon:"💪",
+name:"Sport",
+label:"Sport fait",
+active:true,
+reasons:["Fatigue","Temps","Motivation","Choix conscient"]
+}
+
+];
+
+const DATAK="victoires_v9_data";
+const GOALK="victoires_v9_goals";
+
+let selected=new Date();
+let pending=null;
+
+
+function loadGoals(){
+
+try{
+
+let raw=localStorage.getItem(GOALK);
+
+if(raw===null)
+return DEFAULT_GOALS;
+
+let g=JSON.parse(raw);
+
+return Array.isArray(g) ? g : DEFAULT_GOALS;
+
+}catch(e){
+
+return DEFAULT_GOALS;
+
+}
+
+}
+
+
+function saveGoals(g){
+
+localStorage.setItem(GOALK,JSON.stringify(g));
+
+}
+
+
+function loadData(){
+
+try{
+
+return JSON.parse(
+localStorage.getItem(DATAK)||"{}"
+);
+
+}catch(e){
+
+return {};
+
+}
+
+}
+
+
+function saveData(x){
+
+localStorage.setItem(
+DATAK,
+JSON.stringify(x)
+);
+
+}
+
+
+function key(d){
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+
+function moveDay(n){
+
+selected.setDate(
+selected.getDate()+n
+);
+
+render();
+
+}
+
+
+function goToday(){
+
+selected=new Date();
+
+render();
+
+}
+
+
+function goalById(id){
+
+return loadGoals().find(
+g=>g.id===id
+);
+
+}
+
+
+function add(id,result,reason=null){
+
+let d=loadData();
+
+let k=key(selected);
+
+if(!d[k])
+d[k]=[];
+
+d[k].push({
+
+id:id,
+result:result,
+reason:reason,
+time:new Date().toISOString()
+
+});
+
+saveData(d);
+
+render();
+
+}
+
+
+function miss(id){
+
+pending=id;
+
+let g=goalById(id);
+
+document.getElementById("modalTitle").textContent=
+g.icon+" Qu'est-ce qui s'est passé ?";
+
+document.getElementById("reasons").innerHTML=
+
+(g.reasons || [
+"Automatique",
+"Envie forte",
+"Contexte",
+"Choix conscient"
+])
+
+.map(r=>
+
+'<button class="reason" onclick="recordMiss(\''+
+r+
+'\')">'+
+r+
+'</button>'
+
+).join("");
+
+document.getElementById("missModal").style.display="flex";
+
+}
+
+
+function recordMiss(r){
+
+add(pending,"miss",r);
+
+closeModal("missModal");
+
+pending=null;
+
+}
+
+
+function closeModal(id){
+
+document.getElementById(id).style.display="none";
+
+}
+
+
+function removeLast(id){
+
+let d=loadData();
+
+let k=key(selected);
+
+let a=d[k]||[];
+
+for(let i=a.length-1;i>=0;i--){
+
+if(a[i].id===id){
+
+a.splice(i,1);
+
+break;
+
+}
+
+}
+
+d[k]=a;
+
+saveData(d);
+
+render();
+
+}
+
+
+function pct(w,t){
+
+return t
+? Math.round(100*w/t)
+: null;
+
+}
+
+
+function openGoals(){
+
+renderGoals();
+
+document.getElementById("goalsModal").style.display="flex";
+
+}
+
+
+function renderGoals(){
+
+const g=loadGoals();
+
+document.getElementById("goalList").innerHTML=
+
+g.map(x=>
+
+'<div class="goalrow">'+
+
+'<span style="font-size:24px">'+
+x.icon+
+'</span>'+
+
+'<span class="goalname">'+
+x.label+
+'</span>'+
+
+'<button class="toggle '+
+(x.active?'on':'off')+
+'" onclick="toggleGoal(\''+
+x.id+
+'\')">'+
+(x.active?'Actif':'Masqué')+
+'</button>'+
+
+'<button class="delete" onclick="deleteGoal(\''+
+x.id+
+'\')">Suppr.</button>'+
+
+'</div>'
+
+).join("");
+
+}
+
+
+function toggleGoal(id){
+
+let g=loadGoals();
+
+let x=g.find(
+x=>x.id===id
+);
+
+if(x)
+x.active=!x.active;
+
+saveGoals(g);
+
+renderGoals();
+
+render();
+
+}
+
+
+function deleteGoal(id){
+
+let g=loadGoals().filter(
+x=>x.id!==id
+);
+
+saveGoals(g);
+
+renderGoals();
+
+render();
+
+}
+
+
+function createGoal(){
+
+let emoji=
+(document.getElementById("newEmoji").value||"🎯").trim();
+
+let name=
+(document.getElementById("newName").value||"").trim();
+
+if(!name)
+return;
+
+let g=loadGoals();
+
+let id="custom_"+Date.now();
+
+g.push({
+
+id:id,
+icon:emoji,
+name:name,
+label:name,
+active:true,
+
+reasons:[
+"Automatique",
+"Envie forte",
+"Contexte",
+"Choix conscient"
+]
+
+});
+
+saveGoals(g);
+
+document.getElementById("newName").value="";
+
+renderGoals();
+
+render();
+
+closeModal("goalsModal");
+
+}
+
+
+function render(){
+
+let goals=loadGoals();
+
+let active=
+goals.filter(g=>g.active);
